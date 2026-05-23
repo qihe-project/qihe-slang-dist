@@ -43,7 +43,7 @@ jobs:
 
   macos:
     name: macOS (arm64)
-    runs-on: macos-latest
+    runs-on: macos-14
     steps:
       - uses: actions/checkout@v6
         with:
@@ -51,20 +51,24 @@ jobs:
           ref: ${{ env.SLANG_REF }}
           path: slang
           fetch-depth: 0
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "15.4"
+      - name: Configure
+        working-directory: slang
+        run: |
+          cmake --preset macos-release \
+            -DSLANG_INCLUDE_TESTS=OFF \
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
       - name: Build
         working-directory: slang
         run: |
-          cmake -B build \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0 \
-            -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
-            -DSLANG_INCLUDE_TESTS=OFF
-          cmake --build build -j4
+          cmake --build build/macos-release -j4
       - name: Package
         working-directory: slang
         run: |
           mkdir -p dist
-          tar -czvf dist/slang-macos-arm64.tar.gz -C build/bin slang
+          tar -czvf dist/slang-macos-arm64.tar.gz -C build/macos-release/bin slang
       - uses: actions/upload-artifact@v7
         with:
           name: artifact-macos
@@ -80,19 +84,22 @@ jobs:
           ref: ${{ env.SLANG_REF }}
           path: slang
           fetch-depth: 0
+      - uses: ilammy/msvc-dev-cmd@v1
+      - name: Configure
+        working-directory: slang
+        run: |
+          cmake --preset win64-release `
+            -DSLANG_INCLUDE_TESTS=OFF `
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
       - name: Build
         working-directory: slang
         run: |
-          cmake -B build `
-            -DCMAKE_BUILD_TYPE=Release `
-            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
-            -DSLANG_INCLUDE_TESTS=OFF
-          cmake --build build -j4
+          cmake --build build/win64-release -j4
       - name: Package
         working-directory: slang
         run: |
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          Compress-Archive -Path build/bin/slang.exe -DestinationPath dist/slang-windows-x86_64.zip
+          Compress-Archive -Path build/win64-release/bin/slang.exe -DestinationPath dist/slang-windows-x86_64.zip
       - uses: actions/upload-artifact@v7
         with:
           name: artifact-windows
