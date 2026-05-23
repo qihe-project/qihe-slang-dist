@@ -30,7 +30,7 @@ jobs:
             -DCMAKE_CXX_FLAGS="-static-libgcc -static-libstdc++" \
             -DCMAKE_INTERPROCEDURAL_OPTIMIZATION=TRUE \
             -DSLANG_INCLUDE_TESTS=OFF
-          cmake --build build -j4
+          cmake --build build --target slang_driver -j4
       - name: Package
         working-directory: slang
         run: |
@@ -63,7 +63,7 @@ jobs:
       - name: Build
         working-directory: slang
         run: |
-          cmake --build build/macos-release -j4
+          cmake --build build/macos-release --target slang_driver -j4
       - name: Package
         working-directory: slang
         run: |
@@ -94,7 +94,7 @@ jobs:
       - name: Build
         working-directory: slang
         run: |
-          cmake --build build/win64-release -j4
+          cmake --build build/win64-release --target slang_driver -j4
       - name: Package
         working-directory: slang
         run: |
