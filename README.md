@@ -14,10 +14,9 @@ those release assets directly.
 
 ## Current Workflows
 
-- [`.github/workflows/release-v11.0.yml`](./.github/workflows/release-v11.0.yml)
-  Builds upstream `slang` tag `v11.0`
 - [`.github/workflows/release-f31d20e.yml`](./.github/workflows/release-f31d20e.yml)
   Builds upstream `slang` commit `f31d20e5574773e9ebe46bba95efa395966ce5e9`
+- More workflows can be added as needed to build other versions or commits of `slang`
 
 Each workflow is manually triggered and publishes a draft GitHub Release with
 these assets:
@@ -42,7 +41,7 @@ with the same names. This makes it easier to iterate while debugging the build.
 
 This repository uses one workflow per upstream version / commit:
 
-- release by version tag: `release-v11.0.yml`
+- release by version tag: `release-<version>.yml`
 - release by commit: `release-<short-commit>.yml`
 
 The corresponding GitHub release tag matches the upstream reference being built.
